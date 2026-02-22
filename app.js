@@ -1,77 +1,91 @@
 const express = require('express');
 const app = express();
 app.use(express.json());
+
 const config = require('./config/config');
 
 const users = [
-    { id: 1, name: "Temur", age: 23 },
-    { id: 2, name: "Ali", age: 25 }
+    { id: 1, name: 'Temur', age: 23 },
+    { id: 2, name: 'Ali', age: 25 }
 ];
 
+// --- helpers ---
+function parseId(param) {
+    const id = Number(param);
+    return Number.isInteger(id) && id > 0 ? id : null;
+}
+
+function validateUserPayload(body) {
+    const name = typeof body?.name === 'string' ? body.name.trim() : '';
+    const ageNum = Number(body?.age);
+
+    if (!name) return { ok: false, message: 'Name is required' };
+    if (!Number.isFinite(ageNum)) return { ok: false, message: 'Age must be a number' };
+    if (!Number.isInteger(ageNum) || ageNum < 0) return { ok: false, message: 'Age must be a non-negative integer' };
+
+    return { ok: true, data: { name, age: ageNum } };
+}
+
+function nextId(list) {
+    if (list.length === 0) return 1;
+    const maxId = Math.max(...list.map(u => u.id));
+    return maxId + 1;
+}
+
+// --- routes ---
 app.post('/users', (req, res) => {
-    const { name, age } = req.body;
+    const v = validateUserPayload(req.body);
+    if (!v.ok) return res.status(400).json({ message: v.message });
 
-    if (!name || !age) {
-        return res.status(400).json({ message: 'Name and age are required' });
-    }
+    const user = { id: nextId(users), ...v.data };
+    users.push(user);
 
-    const id = users.length ? users[users.length - 1].id + 1 : 1;
-
-    const newUser = { id, name, age };
-
-    users.push(newUser);
-
-    res.status(201).json(newUser);
+    return res.status(201).json(user);
 });
 
 app.get('/users', (req, res) => {
-    res.status(200).json(users);
+    return res.status(200).json(users);
 });
 
 app.get('/users/:id', (req, res) => {
-    const id = Number(req.params.id);
-    const user = users.find((user) => user.id === id);
-    if (!user) {
-        return res.status(404).send('No such user');
-    }
-    res.status(200).json(user);
+    const id = parseId(req.params.id);
+    if (!id) return res.status(400).json({ message: 'Invalid ID' });
+
+    const user = users.find(u => u.id === id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    return res.status(200).json(user);
 });
 
 app.put('/users/:id', (req, res) => {
-    const id = Number(req.params.id);
-
-    if (isNaN(id)) {
-        return res.status(400).json({ message: 'Invalid ID' });
-    }
+    const id = parseId(req.params.id);
+    if (!id) return res.status(400).json({ message: 'Invalid ID' });
 
     const user = users.find(u => u.id === id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
-    if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-    }
+    const v = validateUserPayload(req.body);
+    if (!v.ok) return res.status(400).json({ message: v.message });
 
-    const { name, age } = req.body;
+    user.name = v.data.name;
+    user.age = v.data.age;
 
-    if (!name || !age) {
-        return res.status(400).json({ message: 'Name and age are required' });
-    }
-
-    user.name = name;
-    user.age = age;
-
-    res.status(200).json(user);
+    return res.status(200).json(user);
 });
 
 app.delete('/users/:id', (req, res) => {
-    const id = Number(req.params.id);
-    const index = users.findIndex((user) => user.id === id);
-    if (index === -1) {
-        return res.status(404).send('No such user');
-    }
+    const id = parseId(req.params.id);
+    if (!id) return res.status(400).json({ message: 'Invalid ID' });
+
+    const index = users.findIndex(u => u.id === id);
+    if (index === -1) return res.status(404).json({ message: 'User not found' });
+
     users.splice(index, 1);
-    res.status(200).json(users);
+    
+    return res.sendStatus(204);
 });
 
+// --- start ---
 app.listen(config.server.port, () => {
     console.log(`Listening on port ${config.server.port}`);
 });
