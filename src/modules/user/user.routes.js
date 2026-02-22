@@ -1,16 +1,24 @@
-const {Router} = require("express");
-const UserController = require("./user.controller");
-const router = Router();
+// src/modules/user/user.routes.js
+const express = require('express');
+const router = express.Router();
 
-// --- routes ---
-router.post('/', UserController.userCreate);
+const UserController = require('./user.controller');
+const { validate } = require('../../middlewares/validate');
+const { idParamSchema, createUserSchema, updateUserSchema } = require('./user.val');
 
+// CREATE
+router.post('/', validate(createUserSchema), UserController.userCreate);
+
+// READ ALL
 router.get('/', UserController.userGetAll);
 
-router.get('/:id', UserController.userGetOne);
+// READ ONE
+router.get('/:id', validate(idParamSchema, 'params'), UserController.userGetOne);
 
-router.put('/:id', UserController.userUpdate);
+// UPDATE
+router.patch('/:id', validate(idParamSchema, 'params'), validate(updateUserSchema), UserController.userUpdate);
 
-router.delete('/:id', UserController.userDelete);
+// DELETE
+router.delete('/:id', validate(idParamSchema, 'params'), UserController.userDelete);
 
 module.exports = router;
