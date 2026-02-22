@@ -81,7 +81,7 @@ app.delete('/users/:id', (req, res) => {
     if (index === -1) return res.status(404).json({ message: 'User not found' });
 
     users.splice(index, 1);
-    
+
     return res.sendStatus(204);
 });
 
