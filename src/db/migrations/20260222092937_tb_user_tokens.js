@@ -12,14 +12,11 @@ exports.up = async function(knex) {
             .inTable('tb_users')
             .onDelete('CASCADE');
 
-        table.enu('token_type', ['refresh', 'access']).notNullable().defaultTo('refresh');
+        table.enu('token_type', ['refresh', 'access']).notNullable().defaultTo('access');
 
         table.string('token_hash', 255).notNullable();
         table.dateTime('expires_at').notNullable();
         table.dateTime('revoked_at');
-
-        table.string('user_agent', 255);
-        table.string('ip_address', 45);
 
         table.timestamp('created_at').defaultTo(knex.fn.now());
 

@@ -5,6 +5,7 @@ exports.up = async function(knex) {
 
         table.string('phone', 20).notNullable().unique();
         table.string('email', 150).nullable();
+
         table.text('address').nullable();
 
         table.boolean('is_active').notNullable().defaultTo(true);

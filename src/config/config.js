@@ -18,6 +18,10 @@ const config = {
 
     server: {
         port: Number(process.env.PORT) || 3000,
+    },
+
+    tables: {
+        TB_USERS: 'tb_users',
     }
 };
 

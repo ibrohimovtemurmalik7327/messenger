@@ -1,4 +1,4 @@
-const config = require('./config/config');
+const config = require('../config/config');
 
 module.exports = {
     development: {
@@ -10,13 +10,17 @@ module.exports = {
         seeds: {
             directory: './db/seeds',
         },
+        pool: {
+            min: 2,
+            max: 5,
+        }
     },
 
     production: {
         client: 'mysql2',
         connection: {
             ...config.db,
-            ssl: { rejectUnauthorized: false },
+            ssl: {rejectUnauthorized: false},
         },
         migrations: {
             directory: './db/migrations',
@@ -24,5 +28,9 @@ module.exports = {
         seeds: {
             directory: './db/seeds',
         },
+        pool: {
+            min: 2,
+            max: 5,
+        }
     },
 };

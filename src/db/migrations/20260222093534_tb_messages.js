@@ -21,13 +21,6 @@ exports.up = async function (knex) {
 
         table.text('message').notNullable();
 
-        table
-            .enu('type', ['incoming', 'outgoing'], {
-                useNative: true,
-                enumName: 'message_type_enum',
-            })
-            .notNullable();
-
         table.boolean('is_read').notNullable().defaultTo(false);
 
         table.timestamp('created_at').defaultTo(knex.fn.now());
