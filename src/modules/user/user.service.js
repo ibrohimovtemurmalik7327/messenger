@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const {validateUserPayload, nextId, parseId} = require("./helpers/user.helpers");
 const UserModels = require("./user.models")
+const db_mysql = require("../../db/connection");
 
 class UserService {
     userCreate = async (data) => {
@@ -17,36 +18,88 @@ class UserService {
                 last_name: data.last_name,
                 age: data.age,
                 avatar_url: data.avatar_url
-            })
+            });
 
             return {
                 success: true,
                 data: user
-            }
+            };
         } catch (error) {
             return {
                 success: false,
                 error: error,
                 data: {}
-            }
+            };
         }
-    }
+    };
 
     userGetAll = async () => {
-        return users;
-    }
+        try {
+            const users = await UserModels.userGetAll();
+            return {
+                success: true,
+                data: users
+            };
+        }
+        catch (error) {
+            return {
+                success: false,
+                error: error,
+                data: {}
+            };
+        }
+    };
 
-    userGetOne = async () => {
+    userGetOne = async (id) => {
+        try{
+            const user = await UserModels.userGetOne(id);
+            return {
+                success: true,
+                data: user
+            };
+        }
+        catch (error) {
+            return {
+                success: false,
+                error: error,
+                data: {}
+            };
+        }
+    };
 
-    }
+    userUpdate = async (id, data) => {
+        try{
+            const updated_user = await UserModels.userUpdate(id, data);
+            return {
+                success: true,
+                data: updated_user
+            };
+        }
+        catch (error) {
+            return {
+                success: false,
+                error: error,
+                data: {}
+            };
+        }
+    };
 
-    userUpdate = async () => {
-
-    }
-
-    userDelete = async () => {
-
-    }
+    userDelete = async (id) => {
+        try {
+            const result = await UserModels.userDelete(id);
+            return {
+                success: true,
+                data: result
+            };
+        }
+        catch (error) {
+            return {
+                success: false,
+                error: error,
+                data: {}
+            };
+        }
+    };
 }
 
 module.exports = new UserService();
