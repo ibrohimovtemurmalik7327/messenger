@@ -1,4 +1,3 @@
-// src/modules/user/user.controller.js
 const UserService = require('./user.service');
 
 class UserController {
@@ -13,7 +12,7 @@ class UserController {
     };
 
     userGetOne = async (req, res) => {
-        const id = Number(req.params.id); // validate allaqachon bo‘lgan
+        const id = Number(req.params.id);
         const user = await UserService.userGetOne(id);
 
         if (!user?.data) return res.status(404).json({ message: 'User not found' });
@@ -22,9 +21,9 @@ class UserController {
 
     userUpdate = async (req, res) => {
         const id = Number(req.params.id);
-        const data = req.body; // validate allaqachon bo‘lgan (stripUnknown ham bo‘ladi)
+        const data = req.body;
 
-        const user = await UserService.userGetOne(id); // ✅ BUG FIX
+        const user = await UserService.userGetOne(id);
         if (!user?.data) return res.status(404).json({ message: 'User not found' });
 
         const updated_user = await UserService.userUpdate(id, data);

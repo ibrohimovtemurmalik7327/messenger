@@ -1,4 +1,3 @@
-// src/middlewares/validate.js
 const validate = (schema, property = 'body') => (req, res, next) => {
     const { error, value } = schema.validate(req[property]);
 
@@ -8,7 +7,6 @@ const validate = (schema, property = 'body') => (req, res, next) => {
         });
     }
 
-    // stripUnknown: true bo‘lgani uchun tozalangan data shu yerga tushadi
     req[property] = value;
 
     next();

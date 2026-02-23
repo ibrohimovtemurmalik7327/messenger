@@ -1,7 +1,5 @@
 const bcrypt = require('bcrypt');
-const {validateUserPayload, nextId, parseId} = require("./helpers/user.helpers");
 const UserModels = require("./user.models")
-const db_mysql = require("../../db/connection");
 
 class UserService {
     userCreate = async (data) => {
