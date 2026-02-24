@@ -1,22 +1,22 @@
 const bcrypt = require('bcrypt');
+const BCRYPT_COST = Number(process.env.BCRYPT_COST || 15);
 const UserModels = require("./user.models")
 
 class UserService {
     userCreate = async (data) => {
         try {
-            const password_hash = await bcrypt.hash(data.password, 10);
-
-            const user = await UserModels.userCreate({
-                email: data.email,
+            const user = {
                 phone: data.phone,
-                login: data.login,
-                password_hash: password_hash,
                 user_name: data.user_name,
-                first_name: data.first_name,
-                last_name: data.last_name,
-                age: data.age,
-                avatar_url: data.avatar_url
-            });
+                email: data.email ?? null,
+                avatar_url: data.avatar_url ?? null,
+            };
+
+            if (data.password) {
+                user.password_hash = await bcrypt.hash(data.password, BCRYPT_COST);
+            }
+
+            await UserModels.userCreate(user);
 
             return {
                 success: true,

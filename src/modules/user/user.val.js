@@ -1,56 +1,69 @@
 const Joi = require('joi');
 
 const idParamSchema = Joi.object({
-    id: Joi.number().integer().positive().required()
-});
+    id: Joi.number().integer().positive().required(),
+}).options({ abortEarly: true, stripUnknown: true });
 
 const createUserSchema = Joi.object({
-    email: Joi.string().email().max(191).allow(null, ''),
-    phone: Joi.string().max(30).allow(null, ''),
+    phone: Joi.string()
+        .trim()
+        .max(30)
+        .required(),
 
-    login: Joi.string().min(3).max(100).required(),
-    password: Joi.string().min(6).max(128).required(),
+    user_name: Joi.string()
+        .trim()
+        .min(2)
+        .max(100)
+        .required(),
 
-    user_name: Joi.string().min(2).max(100).required(),
-    first_name: Joi.string().max(100).allow(null, ''),
-    last_name: Joi.string().max(100).allow(null, ''),
+    email: Joi.string()
+        .trim()
+        .email()
+        .max(191)
+        .allow(null, '')
+        .optional(),
 
-    age: Joi.number().integer().min(0).allow(null),
-    avatar_url: Joi.string().uri().max(255).allow(null, ''),
-
-    role: Joi.string().valid('user', 'admin').optional(),
-    status: Joi.string().valid('active', 'blocked', 'pending').optional(),
-
-    email_verified_at: Joi.date().optional(),
-    last_login_at: Joi.date().optional(),
-    password_changed_at: Joi.date().optional()
+    avatar_url: Joi.string()
+        .uri()
+        .max(255)
+        .allow(null, '')
+        .optional(),
 })
     .options({ abortEarly: true, stripUnknown: true });
 
 const updateUserSchema = Joi.object({
-    email: Joi.string().email().max(191),
-    phone: Joi.string().max(30),
+    user_name: Joi.string()
+        .trim()
+        .min(2)
+        .max(100)
+        .optional(),
 
-    login: Joi.string().min(3).max(100),
-    user_name: Joi.string().min(2).max(100),
-    first_name: Joi.string().max(100).allow('', null),
-    last_name: Joi.string().max(100).allow('', null),
+    email: Joi.string()
+        .trim()
+        .email()
+        .max(191)
+        .allow(null, '')
+        .optional(),
 
-    age: Joi.number().integer().min(0).allow(null),
-    avatar_url: Joi.string().uri().max(255).allow('', null),
+    avatar_url: Joi.string()
+        .uri()
+        .max(255)
+        .allow(null, '')
+        .optional(),
 
-    role: Joi.string().valid('user', 'admin'),
-    status: Joi.string().valid('active', 'blocked', 'pending'),
-
-    email_verified_at: Joi.date().allow(null),
-    last_login_at: Joi.date().allow(null),
-    password_changed_at: Joi.date().allow(null)
+    login: Joi.string()
+        .trim()
+        .lowercase()
+        .pattern(/^[a-z0-9_]{3,32}$/)
+        .allow(null, '')
+        .optional()
 })
     .min(1)
+    .unknown(false)
     .options({ abortEarly: true, stripUnknown: true });
 
 module.exports = {
     idParamSchema,
     createUserSchema,
-    updateUserSchema
+    updateUserSchema,
 };

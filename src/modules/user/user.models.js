@@ -2,6 +2,13 @@ const db_mysql = require('../../db/connection');
 const config = require('../../config/config');
 
 class UserModels {
+
+    findByPhone = async (phone) => {
+        return db_mysql(config.tables.TB_USERS)
+            .where({ phone })
+            .first();
+    };
+
     userCreate = async (data) => {
         const user_meta = await db_mysql(config.tables.TB_USERS).insert(data);
 
