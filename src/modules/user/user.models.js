@@ -12,7 +12,6 @@ class UserModels {
     userCreate = async (data) => {
         const user_meta = await db_mysql(config.tables.TB_USERS).insert(data);
 
-        // return {success: true, data: user_meta};
         return this.userGetOne(user_meta[0]);
     };
 

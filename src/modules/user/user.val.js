@@ -1,7 +1,10 @@
 const Joi = require('joi');
 
 const idParamSchema = Joi.object({
-    id: Joi.number().integer().positive().required(),
+    id: Joi.number()
+        .integer()
+        .positive()
+        .required(),
 }).options({ abortEarly: true, stripUnknown: true });
 
 const createUserSchema = Joi.object({
@@ -29,6 +32,7 @@ const createUserSchema = Joi.object({
         .allow(null, '')
         .optional(),
 })
+    .unknown(false)
     .options({ abortEarly: true, stripUnknown: true });
 
 const updateUserSchema = Joi.object({
