@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const passwordRule = '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).+$';
 
 const idParamSchema = Joi.object({
     id: Joi.number()
@@ -9,15 +10,31 @@ const idParamSchema = Joi.object({
 
 const createUserSchema = Joi.object({
     phone: Joi.string()
-        .trim()
-        .max(30)
-        .required(),
+        .pattern(/^\+[0-9]+$/)
+        .required()
+        .min(9)
+        .max(15)
+        .messages({
+            'string.pattern.base': 'Phone must start with + and contain digits only'
+        }),
 
     user_name: Joi.string()
         .trim()
         .min(2)
         .max(100)
         .required(),
+
+    password: Joi.string()
+        .min(8)
+        .pattern(new RegExp(passwordRule))
+        .required()
+        .messages({
+            'string.base': 'Password must be a string',
+            'string.empty': 'Password is required',
+            'string.min': 'Password must be at least 8 characters',
+            'string.pattern.base': 'Password must contain uppercase, lowercase, number and special character',
+            'any.required': 'Password is required',
+        }),
 
     email: Joi.string()
         .trim()
@@ -27,10 +44,16 @@ const createUserSchema = Joi.object({
         .optional(),
 
     avatar_url: Joi.string()
-        .uri()
+        .trim()
+        .uri({
+            scheme: ['http', 'https']
+        })
         .max(255)
         .allow(null, '')
-        .optional(),
+        .optional()
+        .messages({
+            'string.uri': 'Avatar URL must be a valid http or https URL'
+        }),
 })
     .unknown(false)
     .options({ abortEarly: true, stripUnknown: true });
@@ -50,10 +73,16 @@ const updateUserSchema = Joi.object({
         .optional(),
 
     avatar_url: Joi.string()
-        .uri()
+        .trim()
+        .uri({
+            scheme: ['http', 'https']
+        })
         .max(255)
         .allow(null, '')
-        .optional(),
+        .optional()
+        .messages({
+            'string.uri': 'Avatar URL must be a valid http or https URL'
+        }),
 
     login: Joi.string()
         .trim()
@@ -66,8 +95,43 @@ const updateUserSchema = Joi.object({
     .unknown(false)
     .options({ abortEarly: true, stripUnknown: true });
 
+const changePasswordSchema = Joi.object({
+
+    old_password: Joi.string()
+        .min(8)
+        .pattern(new RegExp(passwordRule))
+        .required()
+        .messages({
+            'string.base': 'Old password must be a string',
+            'string.empty': 'Old password is required',
+            'string.min': 'Old password must be at least 8 characters',
+            'string.pattern.base':
+                'Old password must contain uppercase, lowercase, number and special character',
+            'any.required': 'Old password is required'
+        }),
+
+    new_password: Joi.string()
+        .min(8)
+        .pattern(new RegExp(passwordRule))
+        .required()
+        .invalid(Joi.ref('old_password'))
+        .messages({
+            'string.base': 'New password must be a string',
+            'string.empty': 'New password is required',
+            'string.min': 'New password must be at least 8 characters',
+            'string.pattern.base':
+                'New password must contain uppercase, lowercase, number and special character',
+            'any.required': 'New password is required',
+            'any.invalid': 'New password must be different from old password'
+        })
+
+})
+    .unknown(false)
+    .options({ abortEarly: true });
+
 module.exports = {
     idParamSchema,
     createUserSchema,
     updateUserSchema,
+    changePasswordSchema
 };

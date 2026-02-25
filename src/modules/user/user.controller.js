@@ -49,6 +49,22 @@ class UserController {
         await UserService.userDelete(id);
         return res.sendStatus(204);
     };
+
+    userChangePassword = async (req, res) => {
+        const id = Number(req.params.id);
+
+        const result = await UserService.userChangePassword(id, req.body);
+
+        if (!result.success) {
+            return res.status(400).json({
+                message: result.error
+            });
+        }
+
+        return res.status(200).json({
+            message: 'Password changed successfully'
+        });
+    };
 }
 
 module.exports = new UserController();

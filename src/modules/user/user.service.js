@@ -89,11 +89,51 @@ class UserService {
                 success: true,
                 data: result
             };
-        }
-        catch (error) {
+        } catch (error) {
             return {
                 success: false,
                 error: error,
+                data: {}
+            };
+        }
+    };
+
+    userChangePassword = async (id, data) => {
+        try {
+            const { old_password, new_password } = data;
+
+            const oldPasswordHash = await UserModels.getPasswordHashById(id);
+
+            if (!oldPasswordHash) {
+                return {
+                    success: false,
+                    error: 'User not found',
+                    data: {}
+                };
+            }
+
+            const isMatch = await bcrypt.compare(old_password, oldPasswordHash);
+
+            if (!isMatch) {
+                return {
+                    success: false,
+                    error: 'Old password incorrect',
+                    data: {}
+                };
+            }
+
+            const hashedNewPassword = await bcrypt.hash(new_password, BCRYPT_COST);
+
+            const result = await UserModels.userChangePassword(id, hashedNewPassword);
+
+            return {
+                success: true,
+                data: result
+            };
+        } catch (error) {
+            return {
+                success: false,
+                error: error?.message || error,
                 data: {}
             };
         }

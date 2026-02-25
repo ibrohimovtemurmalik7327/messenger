@@ -20,7 +20,9 @@ class UserModels {
     };
 
     userGetOne = async (id) => {
-        return db_mysql(config.tables.TB_USERS).select('*').where({id: id}).first();
+        return db_mysql(config.tables.TB_USERS)
+            .where({id})
+            .first();
     };
 
     userUpdate = async (id, data) => {
@@ -37,6 +39,25 @@ class UserModels {
             .where({id})
             .del();
     };
+
+    userChangePassword = async (id, hashedPassword) => {
+        return db_mysql(config.tables.TB_USERS)
+            .where({ id })
+            .update({
+                password_hash: hashedPassword,
+                updated_at: db_mysql.fn.now(),
+            });
+    };
+
+    getPasswordHashById = async (id) => {
+        const row = await db_mysql(config.tables.TB_USERS)
+            .select('password_hash')
+            .where({ id })
+            .first();
+
+        return row?.password_hash;
+    };
+
 }
 
 module.exports = new UserModels();
