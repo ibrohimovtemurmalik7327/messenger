@@ -3,11 +3,11 @@ const router = express.Router();
 
 const ContactController = require('./contact.controller');
 const { validate } = require('../../middlewares/validate');
-const { contactIdParamSchema, userIdParamSchema, createContactSchema, updateContactSchema} = require('./contact.val');
+const { contactIdParamSchema, ownerIdParamSchema, createContactSchema, updateContactSchema} = require('./contact.val');
 
 router.post('/', validate(createContactSchema), ContactController.contactCreate);
 
-router.get('/user/:user_id', validate(userIdParamSchema, 'params'), ContactController.contactGetAll);
+router.get('/owner/:owner_id', validate(ownerIdParamSchema, 'params'), ContactController.contactGetAll);
 
 router.get('/:id', validate(contactIdParamSchema, 'params'), ContactController.contactGetOne);
 

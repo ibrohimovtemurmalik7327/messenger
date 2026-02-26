@@ -8,8 +8,19 @@ class ContactModels {
         return this.contactGetOne(contact_meta[0]);
     };
 
-    contactGetAll = async (user_id) => {
-        return db_mysql(config.tables.TB_CONTACTS).select('*').where({ user_id });
+    contactGetAll = async (owner_id) => {
+        return db_mysql(`${config.tables.TB_CONTACTS} as c`)
+            .leftJoin(
+                `${config.tables.TB_USERS} as u`,
+                'c.user_id',
+                'u.id'
+            )
+            .select(
+                'c.user_id',
+                'u.user_name',
+                'u.email'
+            )
+            .where('c.owner_id', owner_id);
     };
 
     contactGetOne = async (id) => {

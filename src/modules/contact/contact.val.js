@@ -4,8 +4,8 @@ const contactIdParamSchema = Joi.object({
     id: Joi.number().integer().positive().required()
 });
 
-const userIdParamSchema = Joi.object({
-    user_id: Joi.number().integer().positive().required()
+const ownerIdParamSchema = Joi.object({
+    owner_id: Joi.number().integer().positive().required()
 });
 
 const createContactSchema = Joi.object({
@@ -36,7 +36,7 @@ const updateContactSchema = Joi.object({
 
 module.exports = {
     contactIdParamSchema,
-    userIdParamSchema,
+    ownerIdParamSchema,
     createContactSchema,
     updateContactSchema,
 };

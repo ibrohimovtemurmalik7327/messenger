@@ -13,7 +13,7 @@ class ContactController {
     };
 
     contactGetAll = async (req, res) => {
-        const contacts = await ContactService.contactGetAll(Number(req.params.user_id));
+        const contacts = await ContactService.contactGetAll(Number(req.params.owner_id));
         return res.status(200).json(contacts);
     };
 

@@ -17,9 +17,9 @@ class ContactService {
         }
     };
 
-    contactGetAll = async (user_id) => {
+    contactGetAll = async (owner_id) => {
         try {
-            const contacts = await ContactModels.contactGetAll(user_id);
+            const contacts = await ContactModels.contactGetAll(owner_id);
             return {
                 success: true,
                 data: contacts
