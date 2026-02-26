@@ -1,26 +1,35 @@
 const MessageModels = require('./message.models');
+const UserModels = require('../user/user.models');
 
 class MessageService {
-    messageCreate = async function (data) {
+    messageCreate = async (data) => {
         try {
-            const result = await MessageModels.messageCreate(data);
+            const fromId = Number(data.from_user_id);
+            const toId = Number(data.to_user_id);
 
-            return {
-                success: true,
-                data: result
-            };
+            const ids = [fromId, toId];
+            const uniqueIds = [...new Set(ids)];
+
+            const existingIds = await UserModels.getExistingIds(uniqueIds);
+
+            if (existingIds.length !== uniqueIds.length) {
+                return { success: false, error: 'USER_NOT_FOUND', data: {} };
+            }
+
+            const result = await MessageModels.messageCreate(data);
+            return { success: true, data: result };
         } catch (error) {
-            return {
-                success: false,
-                error: error,
-                data: {}
-            };
+            if (error?.errno === 1452) {
+                return { success: false, error: 'USER_NOT_FOUND', data: {} };
+            }
+            return { success: false, error, data: {} };
         }
     };
 
-    messageGetAll = async (userId) => {
+
+    messageGetAll = async (user_id) => {
         try {
-            const messages = await MessageModels.messageGetAll(userId);
+            const messages = await MessageModels.messageGetAll(user_id);
             return {
                 success: true,
                 data: messages
@@ -34,9 +43,9 @@ class MessageService {
         }
     };
 
-    messageGetOne = async (user_id) => {
+    messageGetOne = async (id) => {
         try {
-            const message = await MessageModels.messageGetOne(user_id);
+            const message = await MessageModels.messageGetOne(id);
             return {
                 success: true,
                 data: message

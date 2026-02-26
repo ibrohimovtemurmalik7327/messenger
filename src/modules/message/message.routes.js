@@ -16,5 +16,4 @@ router.patch('/:id', validate(idParamSchema, 'params'), validate(updateMessageSc
 
 router.delete('/:id', validate(idParamSchema, 'params'), MessageController.messageDelete);
 
-
 module.exports = router;

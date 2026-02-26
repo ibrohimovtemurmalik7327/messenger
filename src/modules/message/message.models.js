@@ -8,15 +8,18 @@ class MessageModels {
         return this.messageGetOne(message_meta[0]);
     };
 
-    messageGetAll = async(id) => {
+    messageGetAll = async(user_id) => {
         return db_mysql(config.tables.TB_MESSAGES)
             .select('*')
-            .where('from_user_id', id)
-            .orWhere('to_user_id', id);
+            .where('from_user_id', user_id)
+            .orWhere('to_user_id', user_id);
     };
 
     messageGetOne = async(id) => {
-        return db_mysql(config.tables.TB_MESSAGES).select('*').where({ id });
+        return db_mysql(config.tables.TB_MESSAGES)
+            .select('*')
+            .where({ id })
+            .first();
     };
 
     messageUpdate = async(id, data) => {

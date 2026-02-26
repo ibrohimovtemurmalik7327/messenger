@@ -33,9 +33,9 @@ class ContactService {
         }
     };
 
-    contactGetOne = async (user_id) => {
+    contactGetOne = async (id) => {
         try {
-            const contact = await ContactModels.contactGetOne(user_id);
+            const contact = await ContactModels.contactGetOne(id);
             return {
                 success: true,
                 data: contact

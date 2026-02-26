@@ -3,6 +3,17 @@ const config = require('../../config/config');
 
 class UserModels {
 
+    getExistingIds = async (ids) => {
+        const uniqueIds = [...new Set(ids)].filter((x) => Number.isInteger(x) && x > 0);
+        if (uniqueIds.length === 0) return [];
+
+        const rows = await db_mysql(config.tables.TB_USERS)
+            .select('id')
+            .whereIn('id', uniqueIds);
+
+        return rows.map(r => r.id);
+    };
+
     findByPhone = async (phone) => {
         return db_mysql(config.tables.TB_USERS)
             .where({ phone })

@@ -23,7 +23,7 @@ const updateMessageSchema = Joi.object({
 
     message: Joi.string().min(1).optional(),
 
-    is_read: Joi.boolean().optional(),
+    is_read: Joi.boolean().strict().optional(),
 
     id: Joi.forbidden(),
     created_at: Joi.forbidden(),
