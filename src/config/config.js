@@ -26,6 +26,8 @@ const config = {
 
     tables: {
         TB_USERS: 'tb_users',
+        TB_CONTACTS: 'tb_contacts',
+        TB_MESSAGES: 'tb_messages',
     },
 };
 

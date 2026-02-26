@@ -14,7 +14,7 @@ class UserService {
 
             if (data.password) {
                 user.password_hash = await bcrypt.hash(data.password, BCRYPT_COST);
-            }
+            };
 
             await UserModels.userCreate(user);
 

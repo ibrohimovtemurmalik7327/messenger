@@ -27,7 +27,7 @@ class UserModels {
 
     userUpdate = async (id, data) => {
         return db_mysql(config.tables.TB_USERS)
-            .where('id', id)
+            .where({ id })
             .update({
                 ...data,
                 updated_at: db_mysql.fn.now(),
@@ -36,7 +36,7 @@ class UserModels {
 
     userDelete = async (id) => {
         return db_mysql(config.tables.TB_USERS)
-            .where({id})
+            .where({ id })
             .del();
     };
 
