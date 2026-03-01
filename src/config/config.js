@@ -1,8 +1,14 @@
 const path = require('path');
+const dotenv = require('dotenv');
 
-require('dotenv').config({
-    path: path.resolve(__dirname, '../../.env'),
-});
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config();
+
+const must = (name) => {
+    const v = process.env[name];
+    if (!v) throw new Error(`Missing env: ${name}`);
+    return v;
+};
 
 const config = {
     env: process.env.NODE_ENV || 'development',
@@ -16,7 +22,7 @@ const config = {
     },
 
     jwt: {
-        secret: process.env.JWT_SECRET || 'supersecret',
+        secret: must('JWT_SECRET'),
         expiresIn: process.env.JWT_EXPIRES_IN || '1h',
     },
 
@@ -28,6 +34,15 @@ const config = {
         TB_USERS: 'tb_users',
         TB_CONTACTS: 'tb_contacts',
         TB_MESSAGES: 'tb_messages',
+        TB_PROFILES: 'tb_profiles',
+        TB_TICKETS: 'tb_tickets',
+    },
+
+    auth: {
+        otp_length: Number(process.env.AUTH_OTP_LENGTH) || 6,
+        otp_ttl_ms: Number(process.env.AUTH_OTP_TTL_MS) || 5 * 60 * 1000,
+        bcrypt_cost: Number(process.env.AUTH_BCRYPT_COST) || 10,
+        otp_max_attempts: Number(process.env.AUTH_OTP_MAX_ATTEMPTS) || 5,
     },
 };
 

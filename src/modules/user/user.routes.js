@@ -3,11 +3,13 @@ const router = express.Router();
 
 const UserController = require('./user.controller');
 const { validate } = require('../../middlewares/validate');
-const { idParamSchema, createUserSchema, updateUserSchema, changePasswordSchema} = require('./user.val');
+const { idParamSchema, createUserSchema, updateUserSchema, changePasswordSchema } = require('./user.val');
 
 router.post('/', validate(createUserSchema), UserController.userCreate);
 
 router.get('/', UserController.userGetAll);
+
+router.get('/me', (req, res) => res.json(req.user));
 
 router.get('/:id', validate(idParamSchema, 'params'), UserController.userGetOne);
 
