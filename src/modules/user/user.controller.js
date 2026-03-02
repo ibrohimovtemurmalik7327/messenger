@@ -65,6 +65,12 @@ class UserController {
             message: 'Password changed successfully'
         });
     };
+
+    me = async (req, res) => {
+        const id = Number(req.user?.id);
+        const user = await UserService.me(id);
+        return res.status(200).json(user);
+    };
 }
 
 module.exports = new UserController();

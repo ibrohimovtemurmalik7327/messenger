@@ -9,7 +9,7 @@ router.post('/', validate(createUserSchema), UserController.userCreate);
 
 router.get('/', UserController.userGetAll);
 
-router.get('/me', (req, res) => res.json(req.user));
+router.get('/me', UserController.me);
 
 router.get('/:id', validate(idParamSchema, 'params'), UserController.userGetOne);
 

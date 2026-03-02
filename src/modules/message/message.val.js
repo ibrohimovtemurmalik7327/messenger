@@ -5,7 +5,7 @@ const idParamSchema = Joi.object({
 });
 
 const createMessageSchema = Joi.object({
-    from_user_id: Joi.number().integer().positive().required(),
+    from_user_id: Joi.number().integer().positive().required().forbidden(),
     to_user_id: Joi.number().integer().positive().required(),
 
     message: Joi.string().min(1).required(),

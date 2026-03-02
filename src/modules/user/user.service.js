@@ -138,6 +138,36 @@ class UserService {
             };
         }
     };
+
+    me = async (id) => {
+
+        try {
+            const user = await UserModels.userGetOne(id);
+
+            if (!user) {
+                return {
+                    success: false,
+                    error: 'User not found',
+                    data: {}
+                };
+            }
+
+            return {
+                success: true,
+                data: {
+                    id: user.id,
+                    phone: user.phone,
+                    user_name: user.user_name,
+                }
+            };
+        } catch (error) {
+            return {
+                success: false,
+                error: error,
+                data: {}
+            };
+        }
+    };
 }
 
 module.exports = new UserService();
